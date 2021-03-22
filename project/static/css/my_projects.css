@@ -1,0 +1,30 @@
+#header{
+    margin-top:10rem;
+}
+#my-projs {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-bottom: 10rem;
+}
+
+
+.project{
+    width:30vw;
+    height:30vh;
+    margin:2rem
+}
+
+
+.project img{
+    overflow:hidden;
+    width:100%;
+    height:16rem;
+}
+
+.project figure a{
+    text-decoration: none;
+    color: black;
+    font-size:1.1rem;
+    font-weight: 400;
+}

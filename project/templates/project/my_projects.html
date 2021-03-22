@@ -1,0 +1,29 @@
+{% extends 'project/base.html' %}
+{% load static%}
+
+{% block head %}
+    <title>My Projects</title>
+    <link rel="stylesheet" href="{% static 'css/my_projects.css' %}">
+{% endblock head %}
+
+
+{% block content %}
+<div class="container">
+    <h1 id='header'>{{projs.first.user}} projects</h1>
+    
+</div>
+<div class="container" id='my-projs'>
+
+        {% for proj in projs %}
+        <div class='project'>
+            <figure>
+                <img src="{{ proj.project.projectpics_set.first.picture.url }}" alt="">
+                <figcaption style='text-align:center'>
+                    <a href="{% url 'project:project_details' proj.pk %}">{{proj.project.title}}</a> <!-- TODO:-->
+                </figcaption> 
+            </figure>
+                        
+        </div>
+        {% endfor %}
+    </div>
+{% endblock content %}

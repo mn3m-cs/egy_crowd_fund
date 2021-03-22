@@ -1,0 +1,34 @@
+{% extends 'project/base.html' %}
+
+{% block head %}
+<title>Donations</title>
+<style>
+#myd{
+    margin-top:10rem;
+    margin-bottom: 10rem;
+}
+</style>
+{% endblock head %}
+
+{% block content %}
+<p></p>
+<table class='table container' id='myd'>
+    <thead class="thead-dark">
+        <tr>
+            <th>Project</th>
+            <th>Amount</th>
+            <th>Donation Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for don in dons %}
+        <tr>
+            <td>{{don.project}}</td>
+            <td>{{don.donation}}</td>
+            <td>{{don.donation.date}}</td>
+        </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
+{% endblock content %}

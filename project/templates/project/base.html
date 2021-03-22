@@ -52,10 +52,10 @@
                     <li class="nav-item"><a class="nav-link" href="#">
                             Stories
                         </a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Projects</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'project:my_projects' %}"> My Projects</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'project:create_project'%}">Create Project</a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="#">Donation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'project:my_donations' %}">Donations History</a></li>
                     {% if user.is_authenticated %}
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainMenu"
                         aria-controls="mainMenu" aria-expanded="false" aria-label="Toggle navigation">
