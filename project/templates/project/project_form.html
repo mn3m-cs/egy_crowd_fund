@@ -1,0 +1,21 @@
+{% extends 'project/base.html' %}
+{%load static%}
+
+{% block head %}
+<title>Create Project</title>
+<link rel="stylesheet" href="{% static 'css/proj.css' %}">
+{% endblock head %}
+
+{% block content %}
+
+<p></p> <!-- DON'T REMOVE THIS !!-->
+<div class="container">
+
+    <form method="post" enctype="multipart/form-data" id='create-proj-form'>
+        {%csrf_token%}
+        {% include 'includes/form.html' %}
+        <button type="submit" class='btn btn-block btn-primary'>Create</button>
+    </form>
+</div>
+
+{% endblock content %}

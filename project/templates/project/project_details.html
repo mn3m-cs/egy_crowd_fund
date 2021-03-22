@@ -1,0 +1,35 @@
+{% extends 'project/base.html' %}
+{%load static %}
+{% block head %}
+<title>{{project.title}}</title>
+<link rel="stylesheet" href="{% static 'css/proj_details.css' %}">
+{% endblock head %}
+
+
+<p></p> <!-- DON'T REMOVE THIS !!-->
+{% block content %}
+<div class="row">
+    <div class='col-1'></div>
+    <div class='col-7' id='project_details'>
+        <h1 style='display:inline-block'> {{project.title}}</h1> <span style='float:right;margin-top:1.3rem'> <img
+                src="{% static 'imgs/cat.png' %}"> {{project.category}} </span>
+        <!-- #TODO: carousell  -->
+        <img src="{% static 'imgs/rey.png' %}" style='height:50vh;width:56.6vw'>
+
+        <p style='margin-left:10rem;margin-top:1.3rem;font-size:1.2rem;'>
+            <img src="{{ project_owner.profile_pic.url }}" width='32px' height='32px' style="border-radius:15px">
+            <span style='margin-left:.5rem'>{{project_owner | title}} is organizing this fundraiser.</span>
+
+        </p>
+
+
+        <div id='story_details'>{{project.details}}</div>
+
+    </div>
+
+    <div class='col-4' id='aside'>
+        <p>Similar Projects</p>
+    </div>
+</div>
+
+{% endblock content %}
