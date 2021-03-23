@@ -116,7 +116,15 @@ def comment(request, project):
     return redirect(reverse('project:project_details', args=project))
 
 
-# def report_comment(request,) #TODO:
+def report_comment(request,c_pk,project):
+    comment = Comment.objects.get(pk=c_pk)
+    ecf_user = acc_models.ECFUser.objects.get(user=(request.user))
+    ReportedComments.objects.create(comment=comment,reporter=ecf_user)
+    
+    return redirect(reverse('project:project_details', args=project))
+
+
+
 
 def report_project(request, project):
     ecf_user = acc_models.ECFUser.objects.get(user=(request.user))

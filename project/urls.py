@@ -13,6 +13,6 @@ urlpatterns = [
     path('rate/<project>/',views.rate,name='rate'),
     path('comment/<project>/',views.comment,name='comment'),
     path('report_project/<project>/',views.report_project,name='report_project'),
-
+    path('report_comment/<c_pk>/<project>/',views.report_comment,name='report_comment')
 
 ]

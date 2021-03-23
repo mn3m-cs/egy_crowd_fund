@@ -113,3 +113,10 @@ class ReportedComments(models.Model):
 
     def __str__(self):
         return str(self.reporter) + ' REPORTED '+ str(self.comment)
+
+class FeaturedProjects(models.Model):
+    project = models.ForeignKey(Project,on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.project
