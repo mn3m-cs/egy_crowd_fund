@@ -25,7 +25,7 @@ class Project(models.Model):
         MaxValueValidator(5),
         MinValueValidator(0)
     ],
-        null=True)
+        null=True,blank=True)
     rates_number = models.PositiveIntegerField(default=0)
     def __str__(self):
         return self.title

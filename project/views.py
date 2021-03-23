@@ -1,13 +1,14 @@
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.generic import CreateView, ListView, DetailView
+from django.views.generic import CreateView, ListView, DetailView, DeleteView
 from .models import (Project, ProjectPics, ProjectTags, Donation, UserDonationProject, Rate,
-                     UserRateProject, Comment, UserCommentProject, ReportedComments, ReportedProjects)
+                     UserRateProject, Comment, UserCommentProject, ReportedComments, ReportedProjects,)
 from .forms import ProjectCreateForm
 import accounts.models as acc_models
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.db.models.aggregates import Sum
+from django.contrib.auth.mixins import UserPassesTestMixin
 
 
 def home(request):
@@ -70,7 +71,8 @@ def donate(request, project):
     amount = request.POST['amount']
 
     if int(amount) + int(project_reached) <= int(project_target):
-
+        proj.reached += int(amount)
+        proj.save()
         donation = Donation.objects.create(amount=amount)
         ecf_user = acc_models.ECFUser.objects.get(user=(request.user))
         UserDonationProject.objects.create(
@@ -116,14 +118,12 @@ def comment(request, project):
     return redirect(reverse('project:project_details', args=project))
 
 
-def report_comment(request,c_pk,project):
+def report_comment(request, c_pk, project):
     comment = Comment.objects.get(pk=c_pk)
     ecf_user = acc_models.ECFUser.objects.get(user=(request.user))
-    ReportedComments.objects.create(comment=comment,reporter=ecf_user)
-    
+    ReportedComments.objects.create(comment=comment, reporter=ecf_user)
+
     return redirect(reverse('project:project_details', args=project))
-
-
 
 
 def report_project(request, project):
@@ -132,3 +132,21 @@ def report_project(request, project):
     ReportedProjects.objects.create(reporter=ecf_user, project=proj)
 
     return redirect(reverse('project:project_details', args=project))
+
+
+class DeleteProjectView(UserPassesTestMixin, DeleteView):
+    model = Project
+
+    def target_quart(self):
+        reached = self.get_object().reached
+        target = self.get_object().target
+        return (reached/target)*100 < 25
+
+    def test_func(self):
+        user_project = acc_models.UserProject.objects.get(
+            project=self.get_object())
+        ecf_user = acc_models.ECFUser.objects.get(user=(self.request.user))
+        return user_project.user == ecf_user and self.target_quart()
+
+    def get_success_url(self):
+        return reverse_lazy('project:my_projects')
