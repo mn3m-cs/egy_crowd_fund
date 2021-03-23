@@ -1,12 +1,6 @@
+{% extends 'project/base.html' %}
 
-{{as}}
-{% if exception %}
-
-<h2></h2>
-<p>{{ exception }}</p>
-{%else%}
 <form method="post">
     {% csrf_token %}
     <button type="submit">Cancel</button>
 </form>
-{% endif%}
