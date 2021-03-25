@@ -9,6 +9,8 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse, reverse_lazy
 from django.db.models.aggregates import Sum
 from django.contrib.auth.mixins import UserPassesTestMixin
+import os
+from django.contrib import messages
 
 
 def home(request):
@@ -38,10 +40,8 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
         else:
             return super().form_valid(form)
 
-# TODO: add testmixin
 
-
-class ProjectDetailView(LoginRequiredMixin, DetailView):
+class ProjectDetailView(DetailView):
     template_name = 'project/project_details.html'
     model = Project
 
@@ -51,6 +51,8 @@ class ProjectDetailView(LoginRequiredMixin, DetailView):
             project=(self.object)).user
         context['project_comments'] = self.object.usercommentproject_set.all()
         context['rate'] = self.object.rate
+        context['target'] = self.object.target
+        context['reached'] =self.object.reached
         return context
 
 
@@ -62,9 +64,8 @@ def my_projects(request):
     return render(request, 'project/my_projects.html', {'projs': projs})
 
 
-@login_required  # TODO: add test
+@login_required 
 def donate(request, project):
-    # TODO: return message
     proj = Project.objects.get(pk=project)
     project_target = proj.target
     project_reached = proj.reached
@@ -77,20 +78,22 @@ def donate(request, project):
         ecf_user = acc_models.ECFUser.objects.get(user=(request.user))
         UserDonationProject.objects.create(
             donation=donation, user=ecf_user, project=proj)
+        messages.add_message(request, messages.SUCCESS,
+                             'Thank you for donation ♥', extra_tags='alert alert-success')
     else:
-        print('over')  # TODO: return message
+        messages.add_message(request, messages.ERROR, 'You can donate only up to target!',
+                             extra_tags='alert alert-danger donate-err')
     return redirect(reverse('project:project_details', args=project))
 
-
+@login_required
 def my_donations(request):
     ecf_user = acc_models.ECFUser.objects.get(user=(request.user))
     user_donations = ecf_user.userdonationproject_set.all()
 
     return render(request, 'project/donations.html', {'dons': user_donations})
 
-# TODO: add tests to all views
 
-
+@login_required
 def rate(request, project):
     rate_val = request.POST['rate']
     rate = Rate.objects.create(rate=rate_val)
@@ -103,10 +106,11 @@ def rate(request, project):
     proj.rate = rates_sum / proj.rates_number
 
     proj.save()
+    messages.add_message(request,messages.SUCCESS,'Thanks for rating',extra_tags='alert alert-info')
 
     return redirect(reverse('project:project_details', args=project))
 
-
+@login_required
 def comment(request, project):
     comment_content = request.POST['comment']
     comnt = Comment.objects.create(content=comment_content)
@@ -117,19 +121,21 @@ def comment(request, project):
 
     return redirect(reverse('project:project_details', args=project))
 
-
+@login_required
 def report_comment(request, c_pk, project):
     comment = Comment.objects.get(pk=c_pk)
     ecf_user = acc_models.ECFUser.objects.get(user=(request.user))
     ReportedComments.objects.create(comment=comment, reporter=ecf_user)
+    messages.add_message(request,messages.SUCCESS,'Thanks for report, we will review this comment',extra_tags='alert alert-warning')
 
     return redirect(reverse('project:project_details', args=project))
 
-
+@login_required
 def report_project(request, project):
     ecf_user = acc_models.ECFUser.objects.get(user=(request.user))
     proj = Project.objects.get(pk=project)
     ReportedProjects.objects.create(reporter=ecf_user, project=proj)
+    messages.add_message(request,messages.SUCCESS,'Thanks for report, we will review this project',extra_tags='alert alert-warning')
 
     return redirect(reverse('project:project_details', args=project))
 

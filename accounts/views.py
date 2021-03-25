@@ -1,11 +1,21 @@
 from django.shortcuts import redirect, render
-from django.views.generic import FormView, UpdateView
+from django.views.generic import FormView, UpdateView, DeleteView
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.core.mail import EmailMessage
+from django.utils import six
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.utils.encoding import force_bytes, force_text
+from django.contrib.auth import login
+from django.http import HttpResponse
+from django.urls import reverse, reverse_lazy
+from django.contrib import messages
 
 from .models import ECFUser, UserPhone
 from .forms import ECFUserForm, UpdateProfile
-from django.urls import reverse, reverse_lazy
+from .tokens import account_activation_token
 
 
 class RegisterView(FormView):
@@ -13,9 +23,25 @@ class RegisterView(FormView):
     template_name = 'accounts/register.html'
 
     def form_valid(self, form):
-        print('valid')
         usrname_form = self.request.POST['username']
-        form.save(commit=True)
+        user = form.save(commit=False)
+        user.is_active = False
+        user.save()
+        current_site = get_current_site(self.request)
+        mail_subject = 'Activate your ECF account.'
+        message = render_to_string('accounts/acc_active_email.html', {
+            'user': user,
+            'domain': current_site.domain,
+            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+            'token': account_activation_token.make_token(user),
+        })
+        to_email = form.cleaned_data.get('email')
+        email = EmailMessage(
+            mail_subject, message, to=[to_email]
+        )
+        email.send()
+        # return HttpResponse('Please confirm your email address to complete the registration')
+
         user = User.objects.get(username=usrname_form)
 
         birth_date = self.request.POST['birth_date']
@@ -42,9 +68,27 @@ class RegisterView(FormView):
         for phone in phones:
             phone = self.request.POST.get(phone)
             UserPhone.objects.create(user=ecf_user, phone=phone)
+        messages.add_message(self.request, messages.INFO,
+                             'Thank you for registeration, please check your email for activation link.',extra_tags='alert alert-warning')
+        return redirect(reverse('project:home'))
 
-        return redirect(reverse('accounts:register'))
 
+def activate(request, uidb64, token):
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        login(request, user)
+        messages.add_message(
+            request, messages.INFO, 'Thank you for your email confirmation',extra_tags='alert alert-success')
+        return redirect('project:home')
+        # return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
+    else:
+        return HttpResponse('Activation link is invalid!')
 
 # class EditProfile(LoginRequiredMixin, UpdateView):
 #     model = ECFUser
@@ -67,7 +111,7 @@ def edit_profile(request):
             fb_profile = request.POST['fb_profile']
             profile_pic = request.FILES['profile_pic']
             # TODO: delete old image
-            # TODO: edit picture filed to be like fb
+            # TODO: edit picture filed to be like fb change
             additional_info = request.POST['additional_info']
             ECFUser.objects.update(birth_date=birth_date, country=country,
                                    additional_info=additional_info,
@@ -78,3 +122,9 @@ def edit_profile(request):
 
     return render(request, 'accounts/edit_profile.html', {'form': form,
                                                           })
+
+
+class AccountDeleteView(LoginRequiredMixin, DeleteView):
+    model = User
+    success_url = reverse_lazy('project:home')
+    template_name = 'accounts/user_confirm_delete.html'

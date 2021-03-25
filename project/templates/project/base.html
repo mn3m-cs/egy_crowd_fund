@@ -34,7 +34,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
-
+    <script src="{% static 'js/base.js' %}" defer></script>
 </head>
 
 <body>
@@ -53,10 +53,12 @@
                             Stories
                         </a></li>
                     {% if user.is_authenticated %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'project:my_projects' %}"> My Projects</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'project:my_projects' %}"> My Projects</a>
+                    </li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'project:create_project'%}">Create Project</a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'project:my_donations' %}">Donations History</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'project:my_donations' %}">Donations
+                            History</a></li>
 
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainMenu"
                         aria-controls="mainMenu" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,7 +66,7 @@
                     </button>
                     <div class="collapse navbar-collapse" id="mainMenu">
                         <ul class="navbar-nav ml-auto">
- 
+
                             <li class='nav-item' style='padding:0;width:46px;'> <a class='nav-link' style="padding: 0;"
                                     href=""><img id='account-picture' src="{% static 'imgs/avatar.png'%}"
                                         style='margin:0' width="46" height="40"></a></li>
@@ -73,7 +75,7 @@
                                     aria-haspopup="true" aria-expanded="false">
                                     {{ user.username }}</a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenu">
-                                    <a class="dropdown-item" href='{% url 'accounts:edit_profile'  %}'>Edit profile</a>
+                                    <a class="dropdown-item" href="{% url 'accounts:edit_profile' %}">Edit profile</a>
 
                                     <a class="dropdown-item" href=''>Change password</a>
                                     <div class="dropdown-divider"></div>
@@ -82,10 +84,12 @@
                             </li>
                             {% else %}
                             <form class="form-inline ml-auto" style='margin-right:.5rem;'>
-                                <a href="{% url 'accounts:register' %}" class="btn btn-outline-success text-white">Sign up</a>
+                                <a href="{% url 'accounts:register' %}" class="btn btn-outline-success text-white">Sign
+                                    up</a>
                             </form>
                             <form class="form-inline ml-auto">
-                                <a href="{% url 'accounts:login' %}" class="btn btn-outline-success text-white">Log in</a>
+                                <a href="{% url 'accounts:login' %}" class="btn btn-outline-success text-white">Log
+                                    in</a>
                             </form>
                             {%endif%}
                         </ul>
@@ -95,10 +99,24 @@
 
     <!---End of Navbar-->
     <!--Hero Section-->
+    {% if messages %}
+    <ul class="messages" style='position:absolute;top:8rem;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    ;z-index:12;list-style-type:none'>
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}" {% endif %} role="alert">
+            {{message }}</li>
+            {% endfor %}
+    </ul>
+    {% endif %}
+
     {% block content%}
+
     <section id="hero" class="d-flex justify-content-center align-items-center">
         <div id="heroCarousel" class="container carousel carousel-fade" data-ride="carousel">
             <!--Slide-1-->
+
             <div class="carousel-item active">
                 <div class="carousel-container">
                     <h2 class="animate__animated animate__backInDown">
@@ -114,8 +132,6 @@
                     </a>
                 </div>
             </div>
-            <!--End of Slide-1-->
-            <!--Slide-1-->
             <div class="carousel-item">
                 <div class="carousel-container">
                     <h2 class="animate__animated animate__backInDown">

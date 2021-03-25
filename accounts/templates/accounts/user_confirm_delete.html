@@ -1,0 +1,13 @@
+{% extends 'project/base.html' %}
+
+<div class="alert alert-danger" role="alert">
+    Are you sure ? This cannot be undone!
+</div>
+
+<form method="post">
+
+    {{form.as_p}}
+    {% csrf_token%}
+    <button type="submit" class='btn btn-danger'>Delete</button>
+    
+</form>

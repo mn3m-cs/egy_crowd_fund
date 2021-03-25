@@ -643,3 +643,9 @@ body {
   background: #b3f19b;
   color: #053001;
 }
+
+.hide{
+  display: none;
+  transition: display 2s ;
+}
+

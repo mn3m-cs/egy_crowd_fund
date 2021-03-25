@@ -125,3 +125,13 @@ STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+LOGIN_URL = 'accounts:login'
+LOGIN_REDIRECT_URL = 'project:home'
+LOGOUT_REDIRECT_URL = 'project:home'
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'mohamedabdo581@gmail.com'
+EMAIL_HOST_PASSWORD = os.environ.get('boo')
+EMAIL_PORT = 587
