@@ -1,5 +1,5 @@
 {% extends 'project/base.html' %}
-{% load static%}
+{% load static %}
 {% block head %}
 <title>Edit profile</title>
 {% endblock head %}
@@ -9,8 +9,8 @@
 <p></p>
 <div class="container" style='margin-top:10rem'>
 
-    <form action="" method="post" enctype="multipart/form-data">
-        {% csrf_token%}
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
         {% include 'includes/form.html' %}
         <button type="submit" class='btn btn-primary btn-block'>Update profile</button>
     </form>

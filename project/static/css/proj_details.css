@@ -29,3 +29,20 @@
   }
 
 
+#flex-container{
+    margin-top: 2rem;
+    display:flex;
+    flex-wrap:wrap;
+    
+}
+
+.flex-item{
+    width: 46%;
+    height: 250px;
+    margin-left: 1rem;
+    overflow: hidden;
+}
+
+.flex-item img {
+    overflow: hidden;
+}

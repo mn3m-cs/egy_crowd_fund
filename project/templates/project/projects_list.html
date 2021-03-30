@@ -1,0 +1,46 @@
+{% extends 'project/base.html' %}
+{% load static%}
+{% block head %}
+<title>Projects List</title>
+<script src="{% static 'js/list_projects.js' %}" defer></script>
+<link rel="stylesheet" href="{% static 'css/list_projects.css' %}">
+{% endblock head %}
+<p></p>
+{% block content %}
+
+<div style='margin-top:10rem' id='search_div'>
+    <input type="search" name="search" id="search" placeholder='filter by tag or title' class="form-control">
+    <button type="button" class="btn btn-primary" id='search_btn'>
+        <i class="fas fa-search"></i>
+      </button>
+  
+</div>
+
+ 
+<div class="row" style='margin-left:0;margin-right:0'>
+
+    <div class='col-2' style='margin-top:-1.8rem'>
+        <h4>Categories</h4>
+        <div class="container-fluid" style='height:300px;overflow:auto'>
+            
+        {% for cat in cats %}
+        <span class='cats'>{{cat}}</span><br>
+
+        {%endfor%}
+    </div>
+
+    </div>
+    <div class="col-8" id='f-container'>
+        {% for project in project_list %}
+        <div class="flex-item">
+            <img class="flex-item-image" src="{{project.projectpics_set.first.picture.url}}">
+            <h5 class="text-capitalize text-center my-2">
+                <a href="{% url 'project:project_details' project.pk%}" class='no-decor'>
+                    {{project}}</a>
+            </h5>
+        </div>
+        {%endfor%}
+    </div>
+</div>
+
+{% endblock content %}

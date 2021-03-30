@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from .models import (Category, Project, ProjectPics, ProjectTags, Comment, UserCommentProject,
                      Donation, UserDonationProject, ReportedProjects, ReportedComments, Rate, UserRateProject,
-                     FeaturedProjects
+                     FeaturedProjects,
                      )
 
 admin.site.register(Category)

@@ -5,7 +5,7 @@
 <head>
     {% block head %}
     <title>
-        EGY Crowd-Fund
+        Elnas Lba3deha ♥
     </title>
     {% endblock head %}
     <!-- Required meta tags -->
@@ -41,13 +41,15 @@
     <!---Navbar-->
     <nav class="navbar navbar-expand-lg navbar-light nav-bg fixed-top py-2" id="mainNav">
         <div class="container">
-            <a class="navbar-brand text-white" href="{% url 'project:home' %}">EGY Crowd-Fund</a>
+            <a class="navbar-brand text-white" href="{% url 'project:home' %}">Elnas Lba3deha ♥</a>
             <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
                 data-target="#myNavbar" aria-controls="myNavbar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="navbar-nav ml-auto my-2 my-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'project:projects_list' %}">All Projects</a>
+                    </li>
                     <li class="nav-item"><a class="nav-link" href="#">About</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">
                             Stories
@@ -66,10 +68,13 @@
                     </button>
                     <div class="collapse navbar-collapse" id="mainMenu">
                         <ul class="navbar-nav ml-auto">
-
+                            <!-- TODO: photo-->
                             <li class='nav-item' style='padding:0;width:46px;'> <a class='nav-link' style="padding: 0;"
-                                    href=""><img id='account-picture' src="{% static 'imgs/avatar.png'%}"
-                                        style='margin:0' width="46" height="40"></a></li>
+                                    href=""><img id='account-picture' src="{% if project_owner.profile_pic %}
+                                    {{ project_owner.profile_pic.url }}
+                                    {% else%}
+                                    {% static 'imgs/avatar.png' %}
+                                    {%endif%}" style='margin:0;border-radius:50%' width="40" height="40"></a></li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="userMenu" data-toggle="dropdown"
                                     aria-haspopup="true" aria-expanded="false">
@@ -112,58 +117,28 @@
     {% endif %}
 
     {% block content%}
-
     <section id="hero" class="d-flex justify-content-center align-items-center">
         <div id="heroCarousel" class="container carousel carousel-fade" data-ride="carousel">
             <!--Slide-1-->
-
-            <div class="carousel-item active">
-                <div class="carousel-container">
-                    <h2 class="animate__animated animate__backInDown">
-                        Let's<span>Help</span>
-                    </h2>
-                    <p class="animate__animated animate__fadeInUp">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam iure beatae alias quod, ducimus
-                        explicabo.
-                        adipisicing elit.
-                    </p>
-                    <a href="#" class="btn hero-btn animate__animated animate__backInUp">
-                        Read More
-                    </a>
-                </div>
-            </div>
+            {% for project in featured_projects %}
             <div class="carousel-item">
-                <div class="carousel-container">
-                    <h2 class="animate__animated animate__backInDown">
-                        Lorem Ipsum-1
+                <div class="carousel-container"
+                    style="background-image: url('{{project.project.projectpics_set.first.picture.url}}');background-size:cover;z-index:-1;height:500px">
+                    <h2 class="animate__animated animate__backInDown" style='opacity:1 !important'>
+                        {{project}}
                     </h2>
                     <p class="animate__animated animate__fadeInUp">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam iure beatae alias quod, ducimus
-                        explicabo.
-                        adipisicing elit.
                     </p>
-                    <a href="#" class="btn hero-btn animate__animated animate__backInUp">
+                    <a href="{% url 'project:project_details' project.project.pk %}"
+                        class="btn hero-btn animate__animated animate__backInUp">
                         Read More
                     </a>
                 </div>
             </div>
+            {% endfor %}
+
             <!--End of Slide-1-->
             <!--Slide-1-->
-            <div class="carousel-item">
-                <div class="carousel-container">
-                    <h2 class="animate__animated animate__backInDown">
-                        Lorem Ipsum-2
-                    </h2>
-                    <p class="animate__animated animate__fadeInUp">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam iure beatae alias quod, ducimus
-                        explicabo.
-                        adipisicing elit.
-                    </p>
-                    <a href="#" class="btn hero-btn animate__animated animate__backInUp">
-                        Read More
-                    </a>
-                </div>
-            </div>
             <!--End of Slide-1-->
             <a class="carousel-control-prev" href="#heroCarousel" role="button" data-slide="prev">
                 <span class="carousel-control-prev-icon fas fa-chevron-left" aria-hidden="true"></span>
@@ -177,6 +152,7 @@
             </a>
 
         </div>
+
     </section>
 
     <!--end of hero Section-->
@@ -218,7 +194,9 @@
                 <div class="col-md-8">
                     <div class="tab-content">
                         <div class="tab-pane container p-0 active" id="about-1">
-                            <div class="img" style="background-image: url('{% static 'imgs/rey.png' %}')"></div>
+                            <div class="img"
+                                style="background-repeat: no-repeat;background-image: url('{% static 'imgs/a2.jpg' %}')">
+                            </div>
                             <h3><a href="#">About Us</a></h3>
                             <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consectetur, nam eum laborum
                                 accusantium corrupti inventore repellendus iste exercitationem eveniet voluptas dolor
@@ -329,86 +307,30 @@
         <div class="container">
             <div class="row my-3">
                 <div class="col-10 mx-auto text-center">
-                    <h1 class="text-uppercase">Our Latest Projects</h1>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla, provident.</p>
+                    <h1 class="text-uppercase"> Latest Projects</h1>
                 </div>
             </div>
             <!----->
             <div class="row">
-                <!--single Project-->
-                <div class="col-10 col-md-6 col-lg-4">
-                    <div class="project-container p-5 outline">
-                        <img src="{% static 'imgs/rey.png' %}" class="img-fluid grow" alt="">
-                        <a herf="#" class="donation text-capitalize">Donate Now</a>
-                    </div>
-                    <h4 class="text-capitalize text-center my-2">Project-1</h4>
-                    <h6 class="text-center">
-                        Specification
-                    </h6>
-                </div>
-                <!--End of Single Project-->
-                <!--single Project-->
-                <div class="col-10 col-md-6 col-lg-4">
-                    <div class="project-container p-5 outline">
-                        <img src="{% static 'imgs/rey.png' %}" class="img-fluid grow" alt="">
-                        <a herf="#" class="donation text-capitalize">Donate Now</a>
-                    </div>
-                    <h4 class="text-capitalize text-center my-2">Project-1</h4>
-                    <h6 class="text-center">
-                        Specification
-                    </h6>
-                </div>
-                <!--End of Single Project-->
-                <!--single Project-->
-                <div class="col-10 col-md-6 col-lg-4">
-                    <div class="project-container p-5 outline">
-                        <img src="{% static 'imgs/rey.png' %}" class="img-fluid grow" alt="">
-                        <a herf="#" class="donation text-capitalize">Donate Now</a>
-                    </div>
-                    <h4 class="text-capitalize text-center my-2">Project-1</h4>
-                    <h6 class="text-center">
-                        Specification
-                    </h6>
-                </div>
-                <!--End of Single Project-->
-                <!--single Project-->
-                <div class="col-10 col-md-6 col-lg-4">
-                    <div class="project-container p-5 outline">
-                        <img src="{% static 'imgs/rey.png' %}" class="img-fluid grow" alt="">
-                        <a herf="#" class="donation text-capitalize">Donate Now</a>
-                    </div>
-                    <h4 class="text-capitalize text-center my-2">Project-1</h4>
-                    <h6 class="text-center">
-                        Specification
-                    </h6>
-                </div>
-                <!--End of Single Project-->
-                <!--single Project-->
-                <div class="col-10 col-md-6 col-lg-4">
-                    <div class="project-container p-5 outline">
-                        <img src="{% static 'imgs/rey.png' %}" class="img-fluid grow" alt="">
-                        <a herf="#" class="donation text-capitalize">Donate Now</a>
-                    </div>
-                    <h4 class="text-capitalize text-center my-2">Project-1</h4>
-                    <h6 class="text-center">
-                        Specification
-                    </h6>
-                </div>
-                <!--End of Single Project-->
-                <!--single Project-->
-                <div class="col-10 col-md-6 col-lg-4">
-                    <div class="project-container p-5 outline">
-                        <img src="{% static 'imgs/rey.png' %}" class="img-fluid grow" alt="">
-                        <a herf="#" class="donation text-capitalize">Donate Now</a>
-                    </div>
-                    <h4 class="text-capitalize text-center my-2">Project-1</h4>
-                    <h6 class="text-center">
-                        Specification
-                    </h6>
-                </div>
-                <!--End of Single Project-->
 
+                {% for project in latest_projects %}
+                <div class='col-4'>
+
+                    <div class="project-container p-5 outline">
+                        <img class="img-fluid grow" src="{{project.projectpics_set.first.picture.url}}" width="100%"
+                            height='200px' style='overflow:hidden;height:168px !important'>
+                        <a herf="#" class="donation text-capitalize">Donate Now</a>
+                    </div>
+                    <h4 class="text-capitalize text-center my-2">
+                        <a href="{% url 'project:project_details' project.pk%}" style='text-decoration:none'>
+                            {{project}}</a>
+                    </h4>
+                </div>
+
+                {% endfor %}
             </div>
+
+
         </div>
     </section>
     <!---End of the Projects Section-->
@@ -534,67 +456,34 @@
     <section>
         <div class="container">
             <div class="text-center">
-                <h2 class="mb-5">Finished Projects</h2>
+                <h2 class="mb-5">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/9/99/Star_icon_stylized.svg" width='64px'
+                        height='64px'>
+                    Highest Rated Projects
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/9/99/Star_icon_stylized.svg" width='64px'
+                        height='64px'>
+
+                </h2>
             </div>
-            <div class="row no-gutters">
-                <div class="col-lg-6">
-                    <a class="project-item" href="">
-                        <span class="text">
-                            <span class="des">
-                                <h2>Lorem Ipusm</h2>
-                                <p class="mb-0">
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum, sit.
-                                </p>
-                            </span>
-                        </span>
-                        <img src="{% static 'imgs/rey.png' %}" class="img-fluid" alt="">
-                    </a>
+            <div class="container">
+
+                <div id="carouselExampleControls" class="carousel slide" data-ride="carousel" style='margin-left:15rem'>
+                    <div class="carousel-inner highest_rated">
+                        {% for high_project in highest_projects %}
+                        <div class="carousel-item">
+                            <h3><a href="{% url 'project:project_details' high_project.pk%}"
+                                    style='text-decoration:none'>
+                                    {{high_project}} </a></h3>
+                            <img class="d-block w-100" src="{{high_project.projectpics_set.first.picture.url }}"
+                                height="300px" style="width:70% !important;">
+                        </div>
+                        {% endfor %}
+
+                    </div>
                 </div>
-                <!---->
-                <div class="col-lg-6">
-                    <a class="project-item" href="">
-                        <span class="text">
-                            <span class="des">
-                                <h2>Lorem Ipusm</h2>
-                                <p class="mb-0">
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum, sit.
-                                </p>
-                            </span>
-                        </span>
-                        <img src="{% static 'imgs/rey.png' %}" class="img-fluid" alt="">
-                    </a>
-                </div>
-                <!---->
-                <div class="col-lg-6">
-                    <a class="project-item" href="">
-                        <span class="text">
-                            <span class="des">
-                                <h2>Lorem Ipusm</h2>
-                                <p class="mb-0">
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum, sit.
-                                </p>
-                            </span>
-                        </span>
-                        <img src="{% static 'imgs/rey.png' %}" class="img-fluid" alt="">
-                    </a>
-                </div>
-                <!---->
-                <div class="col-lg-6">
-                    <a class="project-item" href="">
-                        <span class="text">
-                            <span class="des">
-                                <h2>Lorem Ipusm</h2>
-                                <p class="mb-0">
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum, sit.
-                                </p>
-                            </span>
-                        </span>
-                        <img src="{% static 'imgs/rey.png' %}" class="img-fluid" alt="">
-                    </a>
-                </div>
-                <!---->
             </div>
         </div>
+
     </section>
     <!---End of finished projects Section-->
     <!---Donation Section-->
@@ -787,32 +676,6 @@
             </div>
         </div>
     </footer>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 </body>
 

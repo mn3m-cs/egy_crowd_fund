@@ -25,13 +25,14 @@ class Project(models.Model):
         MaxValueValidator(5),
         MinValueValidator(0)
     ],
-        null=True,blank=True)
+        null=True, blank=True, default=0)
     rates_number = models.PositiveIntegerField(default=0)
+
     def __str__(self):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('project:home') #TODO:
+        return reverse('project:home')  # TODO:
 
 
 class ProjectPics(models.Model):
@@ -52,7 +53,7 @@ class ProjectTags(models.Model):
 
 class Comment(models.Model):
     content = models.TextField()
-    
+
     def __str__(self):
         return self.content
 
@@ -65,32 +66,37 @@ class UserCommentProject(models.Model):
     def __str__(self):
         return str(self.user) + ' SAY ' + str(self.comment) + ' ON ' + str(self.project)
 
+
 class Donation(models.Model):
     amount = models.PositiveSmallIntegerField()
     date = models.DateTimeField(auto_now_add=True)
+
     def __str__(self):
         return str(self.amount)
 
+
 class UserDonationProject(models.Model):
-    donation = models.ForeignKey(Donation,on_delete=models.CASCADE)
-    user = models.ForeignKey(acc_models.ECFUser,on_delete=models.CASCADE)
-    project = models.ForeignKey(Project,on_delete=models.CASCADE)
+    donation = models.ForeignKey(Donation, on_delete=models.CASCADE)
+    user = models.ForeignKey(acc_models.ECFUser, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.donation)
+
 
 class Rate(models.Model):
     rate = models.SmallIntegerField(validators=[
         MaxValueValidator(5),
         MinValueValidator(0)
     ])
-    date =models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return str(self.rate)
 
+
 class UserRateProject(models.Model):
-    rate = models.ForeignKey(Rate,on_delete=models.CASCADE)
+    rate = models.ForeignKey(Rate, on_delete=models.CASCADE)
     user = models.ForeignKey(acc_models.ECFUser, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
@@ -99,24 +105,29 @@ class UserRateProject(models.Model):
 
 
 class ReportedProjects(models.Model):
-    reporter = models.ForeignKey(acc_models.ECFUser,on_delete=models.CASCADE)
-    project = models.ForeignKey(Project,on_delete=models.CASCADE)
+    reporter = models.ForeignKey(acc_models.ECFUser, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return str(self.reporter) + ' REPORTED '+ str(self.project)
+        return str(self.reporter) + ' REPORTED ' + str(self.project)
+
 
 class ReportedComments(models.Model):
-    reporter = models.ForeignKey(acc_models.ECFUser,on_delete=models.CASCADE)
-    comment = models.ForeignKey(Comment,on_delete=models.CASCADE)
+    reporter = models.ForeignKey(acc_models.ECFUser, on_delete=models.CASCADE)
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return str(self.reporter) + ' REPORTED '+ str(self.comment)
+        return str(self.reporter) + ' REPORTED ' + str(self.comment)
+
 
 class FeaturedProjects(models.Model):
-    project = models.ForeignKey(Project,on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.project
+        return str(self.project)
+
+
+# TODO: add Tag model to use in search , would be better and faster.

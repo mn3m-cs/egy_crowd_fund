@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import CreateView, ListView, DetailView, DeleteView
-from .models import (Project, ProjectPics, ProjectTags, Donation, UserDonationProject, Rate,
-                     UserRateProject, Comment, UserCommentProject, ReportedComments, ReportedProjects,)
+from .models import (Project, ProjectPics, ProjectTags, Donation, UserDonationProject, Rate, Category,
+                     UserRateProject, Comment, UserCommentProject, ReportedComments, ReportedProjects, FeaturedProjects)
 from .forms import ProjectCreateForm
 import accounts.models as acc_models
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -14,7 +14,12 @@ from django.contrib import messages
 
 
 def home(request):
-    return render(request, 'project/base.html')
+    latest_projects = Project.objects.all().order_by('-start_time')[:5]
+    featured_projects = FeaturedProjects.objects.all()[:5]
+    highest_projects = Project.objects.all().order_by('-rate')[:5]
+    return render(request, 'project/base.html', {'latest_projects': latest_projects,
+                                                 'featured_projects': featured_projects,
+                                                 'highest_projects': highest_projects})
 
 
 class ProjectCreateView(LoginRequiredMixin, CreateView):
@@ -52,7 +57,9 @@ class ProjectDetailView(DetailView):
         context['project_comments'] = self.object.usercommentproject_set.all()
         context['rate'] = self.object.rate
         context['target'] = self.object.target
-        context['reached'] =self.object.reached
+        context['reached'] = self.object.reached
+        context['similar_projects'] = self.object.category.project_set.all().order_by('?')[
+            :4]
         return context
 
 
@@ -64,12 +71,13 @@ def my_projects(request):
     return render(request, 'project/my_projects.html', {'projs': projs})
 
 
-@login_required 
+@login_required
 def donate(request, project):
     proj = Project.objects.get(pk=project)
     project_target = proj.target
     project_reached = proj.reached
     amount = request.POST['amount']
+    proj_pk = int(project)
 
     if int(amount) + int(project_reached) <= int(project_target):
         proj.reached += int(amount)
@@ -83,7 +91,9 @@ def donate(request, project):
     else:
         messages.add_message(request, messages.ERROR, 'You can donate only up to target!',
                              extra_tags='alert alert-danger donate-err')
-    return redirect(reverse('project:project_details', args=project))
+
+    return redirect(reverse('project:project_details', args=(proj_pk,)))
+
 
 @login_required
 def my_donations(request):
@@ -104,11 +114,14 @@ def rate(request, project):
     rates = [r.rate.rate for r in proj.userrateproject_set.all()]
     rates_sum = sum(rates)
     proj.rate = rates_sum / proj.rates_number
+    proj_pk = int(project)
 
     proj.save()
-    messages.add_message(request,messages.SUCCESS,'Thanks for rating',extra_tags='alert alert-info')
+    messages.add_message(request, messages.SUCCESS,
+                         'Thanks for rating', extra_tags='alert alert-info')
 
-    return redirect(reverse('project:project_details', args=project))
+    return redirect(reverse('project:project_details', args=(proj_pk,)))
+
 
 @login_required
 def comment(request, project):
@@ -119,23 +132,27 @@ def comment(request, project):
     UserCommentProject.objects.create(
         user=ecf_user, comment=comnt, project=proj)
 
-    return redirect(reverse('project:project_details', args=project))
+    return redirect(reverse('project:project_details', args=(project,)))
+
 
 @login_required
 def report_comment(request, c_pk, project):
     comment = Comment.objects.get(pk=c_pk)
     ecf_user = acc_models.ECFUser.objects.get(user=(request.user))
     ReportedComments.objects.create(comment=comment, reporter=ecf_user)
-    messages.add_message(request,messages.SUCCESS,'Thanks for report, we will review this comment',extra_tags='alert alert-warning')
+    messages.add_message(request, messages.SUCCESS,
+                         'Thanks for report, we will review this comment', extra_tags='alert alert-warning')
 
-    return redirect(reverse('project:project_details', args=project))
+    return redirect(reverse('project:project_details', args=(project,)))
+
 
 @login_required
 def report_project(request, project):
     ecf_user = acc_models.ECFUser.objects.get(user=(request.user))
     proj = Project.objects.get(pk=project)
     ReportedProjects.objects.create(reporter=ecf_user, project=proj)
-    messages.add_message(request,messages.SUCCESS,'Thanks for report, we will review this project',extra_tags='alert alert-warning')
+    messages.add_message(request, messages.SUCCESS,
+                         'Thanks for report, we will review this project', extra_tags='alert alert-warning')
 
     return redirect(reverse('project:project_details', args=project))
 
@@ -156,3 +173,13 @@ class DeleteProjectView(UserPassesTestMixin, DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('project:my_projects')
+
+
+class AllProjects(ListView):
+    model = Project
+    template_name = 'project/projects_list.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = (super().get_context_data)(**kwargs)
+        context['cats'] = Category.objects.all()
+        return context

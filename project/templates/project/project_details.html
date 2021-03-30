@@ -54,18 +54,27 @@
         </div>
 
         <p style='margin-left:10rem;margin-top:1.3rem;font-size:1.2rem;'>
-            <img src="{{ project_owner.profile_pic.url }}" width='32px' height='32px' style="border-radius:15px">
+            <img src=" {% if project_owner.profile_pic %}
+            {{ project_owner.profile_pic.url }}
+            {% else%}
+            {% static 'imgs/avatar.png' %}
+            {%endif%}
+            " width='32px' height='32px' style="border-radius:15px">
             <span style='margin-left:.5rem'>{{project_owner | title}} is organizing this fundraiser.</span>
             <span style='float:right;font-family:Monospace'> rate: {{rate}}</span>
 
         </p>
 
         <div id='story_details'>{{project.details}}</div>
-
+        <div id='tags' style='margin-top:1rem'>
+            {% for tag in project.projecttags_set.all %}
+            <span style='color:rgb(56, 132, 247);margin-left:.5rem'>#{{tag.tag}}</span>
+            {%endfor%}
+        </div>
         <div class="container" style='margin-top:2rem;margin-bottom:2rem'>
-            <h4><b>Target:</b> {{target}} L.E</h4>
-            <h4><b>Reacged:</b> {{reached}} L.E</h4> 
-    
+            <h4><b>Target:</b> {{target}} <span style='font-family:mono-space'>EGP</span></h4>
+            <h4><b>Reacged:</b> {{reached}} <span style='font-family:mono-space'>EGP</span></h4>
+
         </div>
         <div class="container" id='prog-bar'>
             <div class="progress" style='height:2rem'>
@@ -73,43 +82,31 @@
                     aria-valuemin="0" aria-valuemax="{{target}}"></div>
             </div>
             <script>
-                const width =('{{reached}}' / '{{target}}' * 100).toFixed(2);
+                const width = ('{{reached}}' / '{{target}}' * 100).toFixed(2);
                 const progess = document.querySelector('.pro-pro');
                 progess.style.width = `${width}%`;
                 progess.textContent = `${width}%`;
             </script>
-    
-                
+
+
+        </div>
+
+        <div class="container">
+
+            <div>
+                <form action="{% url 'project:donate' project=project.pk %}" method="post" style="margin-top:2rem">
+                    {% csrf_token %}
+                    <input type="number" name='amount' placeholder='amount' style="height:2.6rem">
+                    <button type="submit" class='btn btn-warning btn-lg'>Donate</button>
+                    <!-- #TODO: API -->
+                </form>
+            </div>
+
+
         </div>
 
 
-        <div>
-            <form action="{% url 'project:donate' project=project.pk %}" method="post" style="margin-top:2rem">
-                {% csrf_token %}
-                <input type="number" name='amount' placeholder='amount' style="height:2.6rem">
-                <button type="submit" class='btn btn-warning btn-lg'>Donate</button>
-                <!-- #TODO: API -->
-            </form>
-        </div>
-
-        <div id='rate' style='margin-top:3rem'>
-            <form action="{% url 'project:rate' project=project.pk %}" method="post">
-                {% csrf_token %}
-
-                <input type="number" name='rate' placeholder='from 1 to 5'>
-                <button type="submit" class='btn btn-success btn-lg'>Rate</button>
-            </form>
-        </div>
-
-        <div>
-            <form action="{% url 'project:comment' project=project.pk %}" method="post">
-                {% csrf_token %}
-                <textarea name="comment" cols="30" rows="3"></textarea>
-                <button type="submit">Submit</button>
-            </form>
-        </div>
-
-        <div id='comments'>
+        <div id='comments' style='margin-top:1.5rem'>
             <h3>Comments</h3>
             {% for c in project_comments %}
             <div style='border:2px solid black;margin:1rem;padding:.3rem;border-radius:15px'>
@@ -124,26 +121,65 @@
             </div>
             {% endfor %}
         </div>
-
-
         <div>
-            <form action="{% url 'project:report_project' project=project.pk %}" method="post" style="float:right">
-                {%csrf_token%}
-                <input type="submit" class='btn btn-danger' value="report project">
+            <form action="{% url 'project:comment' project=project.pk %}" method="post"
+                style="margin-left:1.4rem;margin-bottom:3rem">
+                {% csrf_token %}
+                <textarea name="comment" cols="60" rows="4" style='border-radius:1rem'
+                    placeholder='Add your comment'></textarea>
+                <button type="submit" class='btn btn-primary' style='margin-bottom:1.8rem'>Submit</button>
             </form>
         </div>
+        <div class="row">
+            <div id='rate' class='col-6'>
+                <form action="{% url 'project:rate' project=project.pk %}" method="post">
+                    {% csrf_token %}
+                    <!-- TODO: replace with stars, code ready-->
 
+                    <input type="number" name='rate' placeholder='from 1 to 5'>
+                    <button type="submit" class='btn btn-success'>Rate</button>
+                </form>
+            </div>
+            <div class='col-4'></div>
+            <div>
+                <form action="{% url 'project:report_project' project=project.pk %}" method="post" style="float:right">
+                    {%csrf_token%}
+                    <input type="submit" class='btn btn-danger' value="report project">
+                </form>
+            </div>
+
+
+        </div>
+        <br><br>
         <a href="{% url 'project:cancel' project.pk %}">Cancel the campign</a>
 
+        <div class="container">
+            <h3 style='margin-top:4rem;color:green'> 🌟Similar Projects</h3>
+            <div id='flex-container'>
+                <br><br><br>
+                {% for project in similar_projects %}
+                <div class='flex-item'>
+                    <h6 style='color:saddlebrown'> <a style='text-decoration:none;color:black'
+                            href="{% url 'project:project_details' project.pk%}">{{project}}</a> </h6>
+                    <img style='margin-top:-.5rem' src="{{project.projectpics_set.first.picture.url}}" width="100%">
+                </div>
+                {%endfor%}
+            </div>
+        </div>
 
+        </>
+
+
+
+        <div class='col-4' id='aside'>
+            <h3 class='mb-4'>Donnation History</h3>
+            {% for don in project.userdonationproject_set.all %}
+            <p><b>{{don.user}}</b> donnated with {{don.donation}} <span style='font-family:mono-space'>EGP</span> </p>
+            {%endfor%}
+        </div>
     </div>
-
 </div>
 
-<div class='col-4' id='aside'>
-    <p>Similar Projects</p>
-</div>
-</div>
 <script>
     carousel_1 = document.querySelector('.carousel-inner').firstElementChild.classList.add('active')
 </script>

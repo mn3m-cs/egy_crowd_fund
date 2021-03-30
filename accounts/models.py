@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
 
 
 class ECFUser(models.Model):
@@ -19,7 +20,14 @@ class ECFUser(models.Model):
 
 class UserPhone(models.Model):
     user = models.ForeignKey(ECFUser, on_delete=models.CASCADE)
-    phone = models.CharField(max_length=12)
+    phone = models.CharField(max_length=12, blank=True,
+
+                             validators=[
+                                 RegexValidator(
+                                     regex='^(01)[0-9]{9}$',
+                                     message='Only Egyptian Phone Numbers.',
+                                 ),
+                             ])
 
     def __str__(self):
         return self.phone

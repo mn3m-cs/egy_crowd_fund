@@ -12,6 +12,8 @@ from django.contrib.auth import login
 from django.http import HttpResponse
 from django.urls import reverse, reverse_lazy
 from django.contrib import messages
+from django.forms.models import model_to_dict
+# from django.core.files.storage import FileSystemStorage
 
 from .models import ECFUser, UserPhone
 from .forms import ECFUserForm, UpdateProfile
@@ -69,7 +71,7 @@ class RegisterView(FormView):
             phone = self.request.POST.get(phone)
             UserPhone.objects.create(user=ecf_user, phone=phone)
         messages.add_message(self.request, messages.INFO,
-                             'Thank you for registeration, please check your email for activation link.',extra_tags='alert alert-warning')
+                             'Thank you for registeration, please check your email for activation link.', extra_tags='alert alert-warning')
         return redirect(reverse('project:home'))
 
 
@@ -84,7 +86,7 @@ def activate(request, uidb64, token):
         user.save()
         login(request, user)
         messages.add_message(
-            request, messages.INFO, 'Thank you for your email confirmation',extra_tags='alert alert-success')
+            request, messages.INFO, 'Thank you for your email confirmation', extra_tags='alert alert-success')
         return redirect('project:home')
         # return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
     else:
@@ -109,19 +111,34 @@ def edit_profile(request):
             country = request.POST['country']
             city = request.POST['city']
             fb_profile = request.POST['fb_profile']
-            profile_pic = request.FILES['profile_pic']
             # TODO: delete old image
             # TODO: edit picture filed to be like fb change
             additional_info = request.POST['additional_info']
             ECFUser.objects.update(birth_date=birth_date, country=country,
                                    additional_info=additional_info,
-                                   profile_pic=profile_pic, city=city, fb_profile=fb_profile)
-    else:
-        form = UpdateProfile(request.user)
-        # user = ECFUser.objects.get(user=request.user)
+                                   city=city, fb_profile=fb_profile)
+            if 'profile_pic' in request.FILES.keys():
+                profile_pic = request.FILES['profile_pic']
+                ecf_user = ECFUser.objects.get(user=request.user)
+                ecf_user.profile_pic = profile_pic
+                ecf_user.save()
 
-    return render(request, 'accounts/edit_profile.html', {'form': form,
-                                                          })
+            return redirect(reverse('project:home'))
+    else:
+        u = ECFUser.objects.get(user=request.user)
+
+        data = {
+            'first_name': request.user.first_name,
+            'last_name': request.user.last_name,
+        }
+
+        # form = UpdateProfile(data)
+        ecf_dict = model_to_dict(u)
+        ecf_dict['first_name'] = request.user.first_name
+        ecf_dict['last_name'] = request.user.last_name
+
+        form = UpdateProfile(initial=ecf_dict)
+    return render(request, 'accounts/edit_profile.html', {'form': form, })
 
 
 class AccountDeleteView(LoginRequiredMixin, DeleteView):

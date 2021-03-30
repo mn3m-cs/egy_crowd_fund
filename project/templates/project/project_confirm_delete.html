@@ -1,6 +1,24 @@
 {% extends 'project/base.html' %}
 
-<form method="post">
-    {% csrf_token %}
-    <button type="submit">Cancel</button>
-</form>
+{% block head %}
+    
+{% endblock head %}
+<p></p>
+{% block content %}
+
+<div style='margin-top:10rem' class="container">
+        <div class="jumbotron">
+            <h1 class="display-3">Delete {{project}} Project</h1>
+            <p class="lead">Are you sure? this can not be undone</p>
+            <hr class="my-2">
+            <p></p>
+            <p class="lead">
+                    <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class='btn btn-danger btn-lg'>Delete Project</button>
+                </form>
+            </p>
+        </div>
+
+</div>
+{% endblock content %}
