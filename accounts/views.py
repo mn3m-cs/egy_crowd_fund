@@ -14,10 +14,12 @@ from django.urls import reverse, reverse_lazy
 from django.contrib import messages
 from django.forms.models import model_to_dict
 # from django.core.files.storage import FileSystemStorage
+import datetime
 
 from .models import ECFUser, UserPhone
 from .forms import ECFUserForm, UpdateProfile
 from .tokens import account_activation_token
+import time
 
 
 class RegisterView(FormView):
@@ -29,8 +31,12 @@ class RegisterView(FormView):
         user = form.save(commit=False)
         user.is_active = False
         user.save()
+
         current_site = get_current_site(self.request)
         mail_subject = 'Activate your ECF account.'
+
+        self.request.session['token_creation_time'] = time.time()
+
         message = render_to_string('accounts/acc_active_email.html', {
             'user': user,
             'domain': current_site.domain,
@@ -65,13 +71,12 @@ class RegisterView(FormView):
 
         phones = [
             name for name in self.request.POST if name.startswith("phone")]
-        print(phones)
-        print('here')
         for phone in phones:
             phone = self.request.POST.get(phone)
             UserPhone.objects.create(user=ecf_user, phone=phone)
         messages.add_message(self.request, messages.INFO,
                              'Thank you for registeration, please check your email for activation link.', extra_tags='alert alert-warning')
+
         return redirect(reverse('project:home'))
 
 
@@ -79,9 +84,13 @@ def activate(request, uidb64, token):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
+        token_creation_time = request.session.get('token_creation_time')
+        time_now = time.time()
+        diff = time_now - token_creation_time
+
     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
-    if user is not None and account_activation_token.check_token(user, token):
+    if user is not None and account_activation_token.check_token(user, token)  and diff <= 86400:
         user.is_active = True
         user.save()
         login(request, user)
