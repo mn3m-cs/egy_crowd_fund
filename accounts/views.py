@@ -69,8 +69,8 @@ class RegisterView(FormView):
 
         ecf_user.save()
 
-        phones = [
-            name for name in self.request.POST if name.startswith("phone")]
+        phones = [name for name in self.request.POST if name.startswith("phone")]
+
         for phone in phones:
             phone = self.request.POST.get(phone)
             UserPhone.objects.create(user=ecf_user, phone=phone)
@@ -151,6 +151,7 @@ def edit_profile(request):
 
 
 class AccountDeleteView(LoginRequiredMixin, DeleteView):
-    model = User
+    model = User #TODO: 
     success_url = reverse_lazy('project:home')
     template_name = 'accounts/user_confirm_delete.html'
+    

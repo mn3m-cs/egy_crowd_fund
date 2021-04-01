@@ -50,10 +50,10 @@
                 <ul class="navbar-nav ml-auto my-2 my-lg-0">
                     <li class="nav-item"><a class="nav-link" href="{% url 'project:projects_list' %}">All Projects</a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="#">About</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">
+                    <!-- <li class="nav-item"><a class="nav-link" href="#">About</a></li> -->
+                    <!-- <li class="nav-item"><a class="nav-link" href="#">
                             Stories
-                        </a></li>
+                        </a></li> -->
                     {% if user.is_authenticated %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'project:my_projects' %}"> My Projects</a>
                     </li>
@@ -82,7 +82,7 @@
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenu">
                                     <a class="dropdown-item" href="{% url 'accounts:edit_profile' %}">Edit profile</a>
 
-                                    <a class="dropdown-item" href=''>Change password</a>
+                                    <!-- <a class="dropdown-item" href=''>Change password</a> -->
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="{% url 'accounts:logout' %}">Log out</a>
                                 </div>
@@ -120,7 +120,7 @@
     <section id="hero" class="d-flex justify-content-center align-items-center">
         <div id="heroCarousel" class="container carousel carousel-fade" data-ride="carousel">
             <!--Slide-1-->
-            {% for project in featured_projects %}
+            {% for project in featured_projects %} 
             <div class="carousel-item">
                 <div class="carousel-container"
                     style="background-image: url('{{project.project.projectpics_set.first.picture.url}}');background-size:cover;z-index:-1;height:500px">
@@ -198,49 +198,37 @@
                                 style="background-repeat: no-repeat;background-image: url('{% static 'imgs/a2.jpg' %}')">
                             </div>
                             <h3><a href="#">About Us</a></h3>
-                            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consectetur, nam eum laborum
-                                accusantium corrupti inventore repellendus iste exercitationem eveniet voluptas dolor
-                                deleniti quis aliquid aut molestias! Corrupti quo aperiam magni!</p>
+                            <p> a non-profit organization, work to make the world better.</p>
                         </div>
                         <!----->
                         <div class="tab-pane container p-0" id="about-2">
-                            <div class="img" style="background-image: url('{% static 'imgs/rey.png' %}')"></div>
+                            <div class="img" style="background-image: url('{% static 'imgs/DfiX7R8W4AA4Gtk.jpg' %}')"></div>
                             <h3><a href="#">Our Beginning</a></h3>
-                            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consectetur, nam eum laborum
-                                accusantium corrupti inventore repellendus iste exercitationem eveniet voluptas dolor
-                                deleniti quis aliquid aut molestias! Corrupti quo aperiam magni!</p>
+                            <p> We start as a small charity group in 2021.</p>
                         </div>
                         <!----->
                         <div class="tab-pane container p-0" id="about-3">
-                            <div class="img" style="background-image: url('{% static 'imgs/rey.png' %}')"></div>
+                            <div class="img" style="background-image: url('{% static 'imgs/61882214_443261826490775_6647568076566953984_n.jpg' %}')"></div>
                             <h3><a href="#">Our Mission</a></h3>
-                            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consectetur, nam eum laborum
-                                accusantium corrupti inventore repellendus iste exercitationem eveniet voluptas dolor
-                                deleniti quis aliquid aut molestias! Corrupti quo aperiam magni!</p>
+                            <p>Make the world better place for living.</p>
                         </div>
                         <!----->
                         <div class="tab-pane container p-0" id="about-4">
-                            <div class="img" style="background-image: url('{% static 'imgs/rey.png' %}')"></div>
+                            <div class="img" style="background-image: url('{% static 'imgs/a2.jpg' %}')"></div>
                             <h3><a href="#">Our Vision</a></h3>
-                            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consectetur, nam eum laborum
-                                accusantium corrupti inventore repellendus iste exercitationem eveniet voluptas dolor
-                                deleniti quis aliquid aut molestias! Corrupti quo aperiam magni!</p>
+                            <p>Become the biggest Egyptian Crowd Funding Organization </p>
                         </div>
                         <!----->
                         <div class="tab-pane container p-0" id="about-5">
-                            <div class="img" style="background-image: url('{% static 'imgs/rey.png' %}')"></div>
+                            <div class="img" style="background-image: url('{% static 'imgs/a2.jpg' %}')"></div>
                             <h3><a href="#">Our Mandate</a></h3>
-                            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consectetur, nam eum laborum
-                                accusantium corrupti inventore repellendus iste exercitationem eveniet voluptas dolor
-                                deleniti quis aliquid aut molestias! Corrupti quo aperiam magni!</p>
+                            <p>Become the biggest Egyptian Crowd Funding Organization </p>
                         </div>
                         <!----->
                         <div class="tab-pane container p-0" id="about-6">
-                            <div class="img" style="background-image: url('{% static 'imgs/rey.png' %}')"></div>
+                            <div class="img" style="background-image: url('{% static 'imgs/a2.jpg' %}')"></div>
                             <h3><a href="#">Our Plans</a></h3>
-                            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consectetur, nam eum laborum
-                                accusantium corrupti inventore repellendus iste exercitationem eveniet voluptas dolor
-                                deleniti quis aliquid aut molestias! Corrupti quo aperiam magni!</p>
+                            <p>Become the biggest Egyptian Crowd Funding Organization </p>
                         </div>
                         <!----->
                     </div>
@@ -259,8 +247,7 @@
             <div class="container">
                 <div class="section-title text-center">
                     <h3>Stories</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos, totam hic id nesciunt quaerat
-                        veritatis.</p>
+                    <p >Some success stories</p>
                 </div>
                 <!----->
                 <div class="row">
@@ -340,8 +327,7 @@
         <div class="container">
             <div class="section-title">
                 <h2 class="text-center">Our Team</h2>
-                <p class="text-center">Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, repellendus
-                    possimus id sapiente sunt ab mollitia cum. </p>
+                <p class="text-center"> </p>
             </div>
             <div class="row">
                 <div class="col-xl-3 col-lg-4 col-md-6">
@@ -350,8 +336,8 @@
                             <img src="{% static 'imgs/rey.png' %}" class="img-fluid" alt="">
                         </div>
                         <div class="team-info">
-                            <h4>John Doe</h4>
-                            <span>Specification</span>
+                            <h4>Mohamed Abdelmoneim</h4>
+                            <span>Web Developer</span>
                             <div class="social">
                                 <a href="">
                                     <i class="fab fa-twitter"></i>
@@ -376,8 +362,8 @@
                             <img src="{% static 'imgs/rey.png' %}" class="img-fluid" alt="">
                         </div>
                         <div class="team-info">
-                            <h4>John Doe</h4>
-                            <span>Specification</span>
+                            <h4>Mohmaed Abdelbaset</h4>
+                            <span>Web Developer</span>
                             <div class="social">
                                 <a href="">
                                     <i class="fab fa-twitter"></i>
@@ -402,8 +388,8 @@
                             <img src="{% static 'imgs/rey.png' %}" class="img-fluid" alt="">
                         </div>
                         <div class="team-info">
-                            <h4>John Doe</h4>
-                            <span>Specification</span>
+                            <h4>Mohamed Adel</h4>
+                            <span>Web Developer</span>
                             <div class="social">
                                 <a href="">
                                     <i class="fab fa-twitter"></i>
@@ -428,8 +414,8 @@
                             <img src="{% static 'imgs/rey.png' %}" class="img-fluid" alt="">
                         </div>
                         <div class="team-info">
-                            <h4>John Doe</h4>
-                            <span>Specification</span>
+                            <h4>Mahmoud Sayed</h4>
+                            <span>Web Developer</span>
                             <div class="social">
                                 <a href="">
                                     <i class="fab fa-twitter"></i>
@@ -487,7 +473,7 @@
     </section>
     <!---End of finished projects Section-->
     <!---Donation Section-->
-    <section class="mt-5">
+    <!-- <section class="mt-5">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-6">
@@ -496,7 +482,6 @@
                     </div>
                 </div>
             </div>
-            <!---->
             <div class="row justify-content-center">
                 <div class="col-lg-6">
                     <form class="donation-form">
@@ -515,7 +500,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <!----->
                             <div class="col-md-8">
                                 <div class="amount">
                                     <div class="need d-flex align-items-center
@@ -555,6 +539,7 @@
         </div>
         </div>
     </section>
+     -->
     <!---End of Donation section Section-->
     {%endblock%}
     <footer class="footer mt-5">
@@ -563,7 +548,7 @@
                 <div class="row">
                     <div class="col-lg-4 col-md-6">
                         <div class="footer-des">
-                            <h3>Green World</h3>
+                            <h3>Elnas Lba3deha ♥</h3>
                             <p class="pb-3">
                                 <em>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem, molestias.</em>
                             </p>

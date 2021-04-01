@@ -74,7 +74,6 @@
         <div class="container" style='margin-top:2rem;margin-bottom:2rem'>
             <h4><b>Target:</b> {{target}} <span style='font-family:mono-space'>EGP</span></h4>
             <h4><b>Reacged:</b> {{reached}} <span style='font-family:mono-space'>EGP</span></h4>
-
         </div>
         <div class="container" id='prog-bar'>
             <div class="progress" style='height:2rem'>
@@ -113,14 +112,17 @@
                 <P> <b>{{c.user}}</b> </P>
                 <p><i>says</i></p>
                 <p style='margin-left:1.6rem'> {{c.comment}}</p>
+
                 <form action="{% url 'project:report_comment' c.pk project.pk  %}" method="post"
                     style="float:right;margin-top:-2.2rem;margin-right:.5rem">
                     {% csrf_token %}
                     <button type="submit" class='btn btn-danger'>Report</button>
                 </form>
+                
             </div>
             {% endfor %}
         </div>
+ 
         <div>
             <form action="{% url 'project:comment' project=project.pk %}" method="post"
                 style="margin-left:1.4rem;margin-bottom:3rem">
@@ -130,17 +132,18 @@
                 <button type="submit" class='btn btn-primary' style='margin-bottom:1.8rem'>Submit</button>
             </form>
         </div>
-        <div class="row">
-            <div id='rate' class='col-6'>
+
+        <div class="row" style='margin-right:0px;margin-left:0px;'>
+            <div id='rate' class='col-7'>
                 <form action="{% url 'project:rate' project=project.pk %}" method="post">
                     {% csrf_token %}
                     <!-- TODO: replace with stars, code ready-->
-
-                    <input type="number" name='rate' placeholder='from 1 to 5'>
+                    <span>Please rate the project</span>
+                    <input type="number" name='rate' placeholder='from 1 to 5' >
                     <button type="submit" class='btn btn-success'>Rate</button>
                 </form>
             </div>
-            <div class='col-4'></div>
+            <div class='col-3'></div>
             <div>
                 <form action="{% url 'project:report_project' project=project.pk %}" method="post" style="float:right">
                     {%csrf_token%}
@@ -150,8 +153,9 @@
 
 
         </div>
+
         <br><br>
-        <a href="{% url 'project:cancel' project.pk %}">Cancel the campign</a>
+        <button class='btn btn-danger btn-block'><a href="{% url 'project:cancel' project.pk %}" style="text-decoration: none;color:white">Cancel the campign</a></button>
 
         <div class="container">
             <h3 style='margin-top:4rem;color:green'> 🌟Similar Projects</h3>
@@ -167,11 +171,11 @@
             </div>
         </div>
 
-        </>
+    </div>
 
 
 
-        <div class='col-4' id='aside'>
+        <div class='col-4' id='aside' >
             <h3 class='mb-4'>Donnation History</h3>
             {% for don in project.userdonationproject_set.all %}
             <p><b>{{don.user}}</b> donnated with {{don.donation}} <span style='font-family:mono-space'>EGP</span> </p>
